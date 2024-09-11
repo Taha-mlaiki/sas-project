@@ -5,22 +5,18 @@
 #define MAX_STUDENTS 100
 #define MAX_DEPARTMENTS 5
 
-// Structure to represent a student
 typedef struct {
     int id;
     char nom[50];
     char prenom[50];
-    char dateNaissance[11];  // Format: jj/mm/aaaa
-    char departement[50];
+    char dateNaissance[11];
+    char departement[30];
     float noteGenerale;
 } Etudiant;
 
-// Array to store students and count of students
 Etudiant etudiants[MAX_STUDENTS];
 int nombreEtudiants = 0;
-int nextId = 1;  // Variable to assign unique IDs
 
-// List of available departments
 const char* departements[MAX_DEPARTMENTS] = {
     "Informatique",
     "Mathematiques",
@@ -29,124 +25,148 @@ const char* departements[MAX_DEPARTMENTS] = {
     "Biologie"
 };
 
-// Function to display the list of departments
 void afficherDepartements() {
-    printf("\nListe des départements:\n");
+    printf("\nListe des departements:\n");
     for (int i = 0; i < MAX_DEPARTMENTS; i++) {
         printf("%d. %s\n", i + 1, departements[i]);
     }
 }
 
-// Function to add a single student
+void affichertouEtudiant() {
+    for (int i = 0; i < nombreEtudiants; i++) {
+        printf("\n******** l'etudiant numero %d *********\n", i + 1);
+        printf("l'ID => %d\n", etudiants[i].id);
+        printf("le nom => %s\n", etudiants[i].nom);
+        printf("le prenom => %s\n", etudiants[i].prenom);
+        printf("la date de naissance => %s\n", etudiants[i].dateNaissance);
+        printf("le departement => %s\n", etudiants[i].departement);
+        printf("la note generale => %.2f\n", etudiants[i].noteGenerale);
+    }
+}
+
 void ajouterUnEtudiant() {
+    // check the maximun number of students can I create
     if (nombreEtudiants >= MAX_STUDENTS) {
-        printf("Capacité maximale atteinte. Impossible d'ajouter plus d'étudiants.\n");
+        printf("Capacite maximale atteinte. Impossible d'ajouter plus d'etudiants.\n");
         return;
     }
+
+    if (nombreEtudiants > 0) {
+        printf("le dernier Id => %d \n\n", etudiants[nombreEtudiants - 1].id);
+    }
+
+    int id;
+    printf("Enter le Id :");
+    scanf("%d", &id);
+    while (id <= nombreEtudiants) {
+        printf("\nCette ID existe deja, Veuillez reessayer\n");
+        printf("=> ");
+        scanf("%d", &id);
+    }
+    etudiants[nombreEtudiants].id = id;
 
     printf("Entrer le nom: ");
     scanf(" %[^\n]", etudiants[nombreEtudiants].nom);
 
-    printf("Entrer le prénom: ");
+    printf("Entrer le prenom: ");
     scanf(" %[^\n]", etudiants[nombreEtudiants].prenom);
 
     printf("Entrer la date de naissance (jj/mm/aaaa): ");
     scanf(" %[^\n]", etudiants[nombreEtudiants].dateNaissance);
 
-    // Choose department
     int choixDepartement;
-    afficherDepartements();
-    printf("Choisissez le numéro du département: ");
+    afficherDepartements(); // show all the deparetement here 
+    printf("Choisissez le numero du departement: ");
+    printf("=> ");
     scanf("%d", &choixDepartement);
 
-    // Validate the department selection
     while (choixDepartement < 1 || choixDepartement > MAX_DEPARTMENTS) {
-        printf("Choix invalide. Veuillez réessayer: ");
+        printf("Choix invalide. Veuillez reessayer: ");
+        printf("=> ");
         scanf("%d", &choixDepartement);
     }
 
-    // Assign the selected department to the student
     strcpy(etudiants[nombreEtudiants].departement, departements[choixDepartement - 1]);
 
-    printf("Note générale: ");
+    printf("Note generale: ");
     scanf("%f", &etudiants[nombreEtudiants].noteGenerale);
-
-    // Assign a unique ID to the student
-    etudiants[nombreEtudiants].id = nextId;
-    nextId++;  // Increment the ID for the next student
     nombreEtudiants++;
 
-    printf("Étudiant ajouté avec succès! ID: %d\n", etudiants[nombreEtudiants - 1].id);
+    printf("Etudiant ajoute avec succes!\n");
 }
 
-// Function to modify or delete a student
 void modifierOuSupprimerEtudiant() {
+  if(nombreEtudiants > 1){
+    affichertouEtudiant();
     int id;
-    printf("Entrer l'ID de l'étudiant à modifier ou supprimer: ");
+    printf("Entrer l'ID de l'etudiant a modifier ou supprimer: ");
     scanf("%d", &id);
 
     for (int i = 0; i < nombreEtudiants; i++) {
         if (etudiants[i].id == id) {
             int choice;
-            printf("\n1. Modifier l'étudiant\n");
-            printf("2. Supprimer l'étudiant\n");
+            printf("\n1. Modifier l'etudiant\n");
+            printf("2. Supprimer l'etudiant\n");
             printf("Choisissez une option: ");
             scanf("%d", &choice);
 
             if (choice == 1) {
-                // Modify student
                 printf("Modifier le nom: ");
                 scanf(" %[^\n]", etudiants[i].nom);
-                printf("Modifier le prénom: ");
+                printf("Modifier le prenom: ");
                 scanf(" %[^\n]", etudiants[i].prenom);
                 printf("Modifier la date de naissance: ");
                 scanf(" %[^\n]", etudiants[i].dateNaissance);
 
                 int choixDepartement;
                 afficherDepartements();
-                printf("Choisissez un nouveau département: ");
+                printf("Choisissez un nouveau departement: ");
                 scanf("%d", &choixDepartement);
+                //
+                while (choixDepartement < 1 || choixDepartement > MAX_DEPARTMENTS) {
+                      printf("Choix invalide. Veuillez reessayer: ");
+                      printf("=> ");
+                      scanf("%d", &choixDepartement);
+                }
                 strcpy(etudiants[i].departement, departements[choixDepartement - 1]);
 
-                printf("Modifier la note générale: ");
+                printf("Modifier la note generale: ");
                 scanf("%f", &etudiants[i].noteGenerale);
 
-                printf("Étudiant modifié avec succès.\n");
+                printf("Etudiant modifie avec succes.\n");
             } else if (choice == 2) {
-                // Delete student
                 for (int j = i; j < nombreEtudiants - 1; j++) {
                     etudiants[j] = etudiants[j + 1];
                 }
                 nombreEtudiants--;
-                printf("Étudiant supprimé avec succès.\n");
+                printf("Etudiant supprime avec succes.\n");
             }
             return;
         }
     }
-    printf("Étudiant non trouvé.\n");
+    printf("Etudiant non trouve.\n");
+  }
 }
 
-// Function to display a student's details
 void afficherEtudiant() {
     int id;
-    printf("Entrer l'ID de l'étudiant à afficher: ");
+    printf("Entrer l'ID de l'etudiant a afficher: ");
     scanf("%d", &id);
 
     for (int i = 0; i < nombreEtudiants; i++) {
         if (etudiants[i].id == id) {
             printf("\nID: %d\n", etudiants[i].id);
             printf("Nom: %s\n", etudiants[i].nom);
-            printf("Prénom: %s\n", etudiants[i].prenom);
+            printf("Prenom: %s\n", etudiants[i].prenom);
             printf("Date de naissance: %s\n", etudiants[i].dateNaissance);
-            printf("Département: %s\n", etudiants[i].departement);
-            printf("Note générale: %.2f\n", etudiants[i].noteGenerale);
+            printf("Departement: %s\n", etudiants[i].departement);
+            printf("Note generale: %.2f\n", etudiants[i].noteGenerale);
             return;
         }
     }
-    printf("Étudiant non trouvé.\n");
+    printf("Etudiant non trouve.\n");
 }
 
-// Function to calculate average grades by department and overall
 void calculerMoyenneGenerale() {
     float sommeTotale = 0;
     int totalEtudiants = 0;
@@ -163,7 +183,7 @@ void calculerMoyenneGenerale() {
         }
 
         if (totalDepartement > 0) {
-            printf("Moyenne pour le département %s: %.2f\n", departements[i], sommeDepartement / totalDepartement);
+            printf("Moyenne pour le departement %s: %.2f\n", departements[i], sommeDepartement / totalDepartement);
         }
 
         sommeTotale += sommeDepartement;
@@ -171,15 +191,14 @@ void calculerMoyenneGenerale() {
     }
 
     if (totalEtudiants > 0) {
-        printf("Moyenne générale pour l'université: %.2f\n", sommeTotale / totalEtudiants);
+        printf("Moyenne generale pour l'universite: %.2f\n", sommeTotale / totalEtudiants);
     } else {
-        printf("Aucun étudiant trouvé pour calculer les moyennes.\n");
+        printf("Aucun etudiant trouve pour calculer les moyennes.\n");
     }
 }
 
-// Function to display statistics
 void afficherStatistiques() {
-    printf("\nNombre total d'étudiants: %d\n", nombreEtudiants);
+    printf("\nNombre total d'etudiants: %d\n", nombreEtudiants);
 
     for (int i = 0; i < MAX_DEPARTMENTS; i++) {
         int count = 0;
@@ -188,29 +207,32 @@ void afficherStatistiques() {
                 count++;
             }
         }
-        printf("Nombre d'étudiants en %s: %d\n", departements[i], count);
+        printf("Nombre d'etudiants en %s: %d\n", departements[i], count);
     }
 
-    printf("\nÉtudiants ayant une moyenne générale supérieure à 10:\n");
+    printf("\nEtudiants ayant une moyenne generale superieure a 10:\n");
     for (int i = 0; i < nombreEtudiants; i++) {
         if (etudiants[i].noteGenerale > 10) {
-            printf("ID: %d, Nom: %s, Note générale: %.2f\n", etudiants[i].id, etudiants[i].nom, etudiants[i].noteGenerale);
+            printf("ID: %d, Nom: %s, Note generale: %.2f\n", etudiants[i].id, etudiants[i].nom, etudiants[i].noteGenerale);
         }
     }
 }
 
-// Menu function
 void menu() {
+    printf("\n--- Menu Principal ---\n");
+    printf("1. Ajouter un etudiant\n");
+    printf("2. Modifier ou supprimer un etudiant\n");
+    printf("3. Afficher les details d'un etudiant\n");
+    printf("4. Calculer la moyenne generale\n");
+    printf("5. Afficher les statistiques\n");
+    printf("6. Quitter\n");
+    printf("Choix: ");
+}
+
+int main() {
     int choix;
     do {
-        printf("\n--- Menu Principal ---\n");
-        printf("1. Ajouter un étudiant\n");
-        printf("2. Modifier ou supprimer un étudiant\n");
-        printf("3. Afficher les détails d'un étudiant\n");
-        printf("4. Calculer la moyenne générale\n");
-        printf("5. Afficher les statistiques\n");
-        printf("6. Quitter\n");
-        printf("Choix: ");
+        menu();
         scanf("%d", &choix);
 
         switch (choix) {
@@ -230,16 +252,12 @@ void menu() {
                 afficherStatistiques();
                 break;
             case 6:
-                printf("Merci d'avoir utilisé l'application!\n");
+                printf("Merci d'avoir utilise notre systeme de gestion des etudiants.\n");
                 break;
             default:
-                printf("Choix invalide. Veuillez réessayer.\n");
+                printf("Choix invalide. Veuillez reessayer.\n");
         }
     } while (choix != 6);
-}
 
-// Main function
-int main() {
-    menu();
     return 0;
 }
